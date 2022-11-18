@@ -1,8 +1,7 @@
-use crate::{yarn_utils, ts_utils};
+use crate::{yarn_utils, ts_utils, loaders_utils};
 
 use std::{
     fs, 
-    // fs::File,
     env, 
     path::Path
 };
@@ -118,6 +117,8 @@ pub fn create_folder(title: &String) -> Result<bool, String> {
 }
 
 fn create_git_ignore() -> Result<bool, String> {
+    let spinner = loaders_utils::get_spinner("Creo .gitignore ...");
+
     let mut lines: Vec<&str> = Vec::new();
     lines.push("# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.\n");
     lines.push("# dependencies");
@@ -146,11 +147,16 @@ fn create_git_ignore() -> Result<bool, String> {
     let result = fs::write(".gitignore", lines);
     match result {
         Err(error) => return Err(error.to_string()),
-        Ok(_) => return Ok(true)
+        Ok(_) => {
+            spinner.finish_with_message(".gitignore creato");
+            return Ok(true);
+        }
     }
 }
 
 fn create_app_tsx() -> Result<bool, String> {
+    let spinner = loaders_utils::get_spinner("Creo src/App.tsx ...");
+
     let mut lines: Vec<&str> = Vec::new();
     lines.push("import React from 'react';\nimport './App.css';\n");
     lines.push("export default function App(): JSX.Element {");
@@ -172,11 +178,16 @@ fn create_app_tsx() -> Result<bool, String> {
     let result = fs::write("App.tsx", lines);
     match result {
         Err(error) => return Err(error.to_string()),
-        Ok(_) => return Ok(true)
+        Ok(_) => {
+            spinner.finish_with_message("src/App.tsx creato");
+            return Ok(true);
+        }
     }
 }
 
 fn create_app_css() -> Result<bool, String> {
+    let spinner = loaders_utils::get_spinner("Creo src/App.css ...");
+
     let mut lines: Vec<&str> = Vec::new();
     lines.push(".App {\n\ttext-align: center;\n}\n");
     lines.push(".App-header {\n\tbackground-color: #282c34;\n\tmin-height: 100vh;\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: center;\n\tjustify-content: center;\n\tfont-size: calc(10px + 2vmin);\n\tcolor: white;\n}\n");
@@ -187,7 +198,10 @@ fn create_app_css() -> Result<bool, String> {
     let result = fs::write("App.css", lines);
     match result {
         Err(error) => return Err(error.to_string()),
-        Ok(_) => return Ok(true)
+        Ok(_) => {
+            spinner.finish_with_message("src/App.css creato");
+            return Ok(true);
+        }
     }
 }
 
@@ -200,6 +214,8 @@ fn change_dir(path: &Path) -> Result<bool, String> {
 }
 
 fn create_index_tsx() -> Result<bool, String> {
+    let spinner = loaders_utils::get_spinner("Creo src/index.tsx ...");
+
     let mut lines: Vec<&str> = Vec::new();
     lines.push("import React from 'react';\nimport ReactDOM from 'react-dom/client';\nimport './index.css';\nimport App from './App';\n");
     lines.push("const root = ReactDOM.createRoot(\n\tdocument.getElementById('root') as HTMLElement\n);\n");
@@ -210,11 +226,16 @@ fn create_index_tsx() -> Result<bool, String> {
     let result = fs::write("index.tsx", lines);
     match result {
         Err(error) => return Err(error.to_string()),
-        Ok(_) => return Ok(true)
+        Ok(_) => {
+            spinner.finish_with_message("src/index.tsx creato");
+            return Ok(true);
+        }
     }
 }
 
 fn create_index_css() -> Result<bool, String> {
+    let spinner = loaders_utils::get_spinner("Creo src/index.css ...");
+
     let mut lines: Vec<&str> = Vec::new();
     lines.push("body {\n\tmargin: 0;\n\tfont-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n\t-webkit-font-smoothing: antialiased;\n\t-moz-osx-font-smoothing: grayscale;\n}\n");
     lines.push("code {\n\tfont-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;\n}\n");
@@ -224,19 +245,29 @@ fn create_index_css() -> Result<bool, String> {
     let result = fs::write("index.css", lines);
     match result {
         Err(error) => return Err(error.to_string()),
-        Ok(_) => return Ok(true)
+        Ok(_) => {
+            spinner.finish_with_message("src/index.css creato");
+            return Ok(true);
+        }
     }
 }
 
 fn create_react_app_env_d_ts() -> Result<bool, String> {
+    let spinner = loaders_utils::get_spinner("Creo src/react-app-env.d.ts ...");
+
     let result = fs::write("react-app-env.d.ts", "/// <reference types=\"react-scripts\" />\n".to_string());
     match result {
         Err(error) => return Err(error.to_string()),
-        Ok(_) => return Ok(true)
+        Ok(_) => {
+            spinner.finish_with_message("src/react-app-env.d.ts creato");
+            return Ok(true);
+        }
     }
 }
 
 fn create_public_index_html() -> Result<bool, String> {
+    let spinner = loaders_utils::get_spinner("Creo public/index.html ...");
+
     let mut lines: Vec<&str> = Vec::new();
     lines.push("<!DOCTYPE html>\n<html lang=\"en\">");
     lines.push("\t<head>");
@@ -260,6 +291,9 @@ fn create_public_index_html() -> Result<bool, String> {
     let result = fs::write("index.html", lines);
     match result {
         Err(error) => return Err(error.to_string()),
-        Ok(_) => return Ok(true)
+        Ok(_) => {
+            spinner.finish_with_message("public/index.html creato");
+            return Ok(true);
+        }
     }
 }

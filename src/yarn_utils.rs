@@ -5,6 +5,8 @@ use std::{
     process::Command
 };
 
+use crate::loaders_utils;
+
 struct Script {
     label: String,
     command: String,
@@ -18,6 +20,8 @@ impl Script {
 }
 
 pub fn init() -> Result<bool, String> {
+    let spinner = loaders_utils::get_spinner("[YARN] Inizializzo ...");
+
     let output = Command::new("yarn")
         .arg("init")
         .arg("-y")
@@ -25,11 +29,18 @@ pub fn init() -> Result<bool, String> {
 
     match output {
         Err(error) => return Err(error.to_string()),
-        Ok(value) => return Ok(value.status.success())
+        Ok(value) => {
+            if value.status.success() {
+                spinner.finish_with_message("[YARN] Inizializzato");
+            }
+            return Ok(value.status.success())
+        }
     }
 }
 
 pub fn add_scripts() -> Result<bool, String> {
+    let spinner = loaders_utils::get_spinner("[YARN] Creo scripts ...");
+
     let result = OpenOptions::new()
         .read(true)
         .write(true)
@@ -56,6 +67,7 @@ pub fn add_scripts() -> Result<bool, String> {
 
     lines.push("\t\"scripts\": {".to_string());
     for script in scripts {
+        spinner.set_message(format!("Creo script '{}' ...", script.label));
         lines.push(get_formatted_script(script.label, script.command, script.is_last));
 
     }
@@ -67,11 +79,16 @@ pub fn add_scripts() -> Result<bool, String> {
     let result = fs::write("package.json", lines);
     match result {
         Err(error) => return Err(error.to_string()),
-        Ok(_) => return Ok(true)
+        Ok(_) => {
+            spinner.finish_with_message("[YARN] Script creati");
+            return Ok(true);
+        }
     }
 }
 
 pub fn add_browsers() -> Result<bool, String> {
+    let spinner = loaders_utils::get_spinner("[YARN] Aggiungo browsers ...");
+
     let result = OpenOptions::new()
         .read(true)
         .write(true)
@@ -97,12 +114,16 @@ pub fn add_browsers() -> Result<bool, String> {
     let result = fs::write("package.json", lines);
     match result {
         Err(error) => return Err(error.to_string()),
-        Ok(_) => return Ok(true)
+        Ok(_) => {
+            spinner.finish_with_message("[YARN] Browsers aggiunti");
+            return Ok(true);
+        }
     }
 }
 
-
 pub fn add_packages() -> Result<bool, String> {
+    let spinner = loaders_utils::get_spinner("[YARN] Installo pacchetti ...");
+
     let output = Command::new("yarn")
         .arg("add")
         .arg("react")
@@ -116,7 +137,12 @@ pub fn add_packages() -> Result<bool, String> {
 
     match output {
         Err(error) => return Err(error.to_string()),
-        Ok(value) => return Ok(value.status.success())
+        Ok(value) => {
+            if value.status.success() {
+                spinner.finish_with_message("[YARN] Pacchetti installati");
+            }
+            return Ok(value.status.success());
+        }
     }
 }
 

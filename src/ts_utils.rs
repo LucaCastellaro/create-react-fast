@@ -1,8 +1,10 @@
-use std::{
-    fs
-};
+use std::fs;
+
+use crate::loaders_utils;
 
 pub fn create_tsconfig_json() -> Result<bool, String> {
+    let spinner = loaders_utils::get_spinner("Creo tsconfig.json ...");
+
     let mut lines: Vec<&str> = Vec::new();
 
     lines.push("{\n\t\"compilerOptions\": {\n\t\t\"target\": \"es5\",\n\t\t\"lib\": [\n\t\t\t\"dom\",\n\t\t\t\"dom.iterable\",\n\t\t\t\"esnext\"\n\t\t],");
@@ -15,6 +17,9 @@ pub fn create_tsconfig_json() -> Result<bool, String> {
     let result = fs::write("tsconfig.json", lines);
     match result {
         Err(error) => return Err(error.to_string()),
-        Ok(_) => return Ok(true)
+        Ok(_) => {
+            spinner.finish_with_message("tsconfig.json creato");
+            return Ok(true);
+        }
     }
 }
