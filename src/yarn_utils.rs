@@ -17,6 +17,16 @@ impl Script {
     fn new(label: &str, command: &str, is_last: bool) -> Script {
         return Script { label: label.to_string(), command: command.to_string(), is_last: is_last };
     }
+
+    fn format(&self) -> String {
+        let mut script = format!("\t\t\"{}\": \"{}\"", self.label, self.command);
+
+        if !(self.is_last) {
+            script.push_str(",");
+        }
+        
+        return script;
+    }
 }
 
 pub fn init() -> Result<bool, String> {
@@ -68,7 +78,7 @@ pub fn add_scripts() -> Result<bool, String> {
     lines.push("\t\"scripts\": {".to_string());
     for script in scripts {
         spinner.set_message(format!("Creo script '{}' ...", script.label));
-        lines.push(get_formatted_script(script.label, script.command, script.is_last));
+        lines.push(script.format());
 
     }
     lines.push("\t}".to_string());
@@ -144,13 +154,4 @@ pub fn add_packages() -> Result<bool, String> {
             return Ok(value.status.success());
         }
     }
-}
-
-fn get_formatted_script(label: String, command: String, is_last: bool) -> String {
-    let mut script = format!("\t\t\"{label}\": \"{command}\"");
-    if !is_last {
-        script.push_str(",");
-    }
-    
-    return script;
 }
