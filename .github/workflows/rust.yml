@@ -2,7 +2,7 @@ name: Rust
 
 on:
   push:
-    branches: [ "release" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -20,3 +20,13 @@ jobs:
       
     - name: Build
       run: cargo build --release
+      
+  release:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: git-checkout
+        uses: actions/checkout@v3
+        
+      - name: Release
+        run: git checkout -b release/v${{ github.event.inputs.versionName }}
